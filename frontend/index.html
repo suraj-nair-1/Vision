@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="TrafficApp">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDuNNvv4iy7BTgDj_MmF0o2f6OD-SGE41Y&libraries=visualization"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript" src="./fusioncharts.js"></script>
+<script type="text/javascript" src="./fusioncharts.charts.js"></script>
+<script type="text/javascript" src="./angular-fusioncharts.min.js"></script>
+<script type="text/javascript" src="./mapCode.js"></script>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <div class="navbar-brand">Predix-tive Parking</a>
+</nav>
+
+<style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 80%;
+        width:45%;
+        margin-left: 2.5%;
+        margin-right: 2.5%;
+        float: left;
+      }
+
+      .chart-panel {
+      	margin-right: 2.5%;
+      	margin-left: 2.5%;
+      	width: 45%;
+      	float: right;
+      }
+
+    </style>
+
+</head>
+<body>
+         <div id="map"></div>
+
+
+
+<div ng-controller="chartController">
+<div class="panel panel-default chart-panel">
+<div class="panel-heading">Current price: {{currentPrice}}</div>
+  <div class="panel-body">
+  	<fusioncharts 
+        width= "95%"
+        height= "69%"
+        type= "msline"
+        dataFormat= "json"
+        dataSource= "{{dataSource}}">
+    </fusioncharts>
+  </div>
+  </div>
+  </div>
+
+
+<script>
+var app = angular.module('TrafficApp', ['ng-fusioncharts']);
+
+app.controller('chartController',['$scope', '$interval', function($scope, $interval){
+	  $scope.dataSource = {
+            "chart": {
+                "caption": "Parking Spot Availability",
+                "subCaption": "San Diego",
+                "captionFontSize": "14",
+                "subcaptionFontSize": "14",
+                "subcaptionFontBold": "0",
+                "paletteColors": "#0075c2,#1aaf5d",
+                "bgcolor": "#ffffff",
+                "showBorder": "0",
+                "showShadow": "0",
+                "showCanvasBorder": "0",
+                "usePlotGradientColor": "0",
+                "legendBorderAlpha": "0",
+                "legendShadow": "0",
+                "showAxisLines": "0",
+                "showAlternateHGridColor": "0",
+                "divlineThickness": "1",
+                "divLineIsDashed": "1",
+                "divLineDashLen": "1",
+                "divLineGapLen": "1",
+                "xAxisName": "Day",
+                "showValues": "0",
+                 "connectNullData": "1"               
+            },
+            "categories": [
+                {
+                    "category": [
+                       
+                    ]
+                }
+            ],
+            "dataset": [
+                {
+                    "seriesname": "Open Spots",
+                    "data": [
+						
+                    ]
+                }
+              
+            ], 
+            "trendlines": [
+                {
+                    "line": [
+                        {
+                            "startvalue": "17022",
+                            "color": "#6baa01",
+                            "valueOnRight": "1",
+                            "displayvalue": "Average"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        var shiet = {"shiet": [
+    	    {ts: 1124124, num_spots: 10},		
+    		{ts:1470419235020, num_spots:3},
+    	 	{ts:1470419235050, num_spots:7},
+
+    	 	{ts:1470419236090, num_spots:13},
+    	 	{ts:1470419236095, num_spots:19},
+
+    	 	{ts:1470419237010, num_spots:29},
+    	  	{ts:1470419237020, num_spots:4},
+    	   	{ts:1470419237030, num_spots:14},
+
+    	    {ts:1470419238040, num_spots:9},
+    	    {ts:1470419238030, num_spots:20},
+
+    	    {ts:1470419240020, num_spots:29},
+    	    {ts:1470419240010, num_spots:9}, 
+
+    	    {ts:1470419241009, num_spots:19},
+    	    {ts:1470419241001, num_spots:2},
+
+    	    {ts:1470419245002, num_spots:13}, 
+
+    	    {ts:1470419246005, num_spots:21}, 
+
+    	    {ts:1470419249002, num_spots:22},
+
+    	    {ts:1470419252009, num_spots:25},
+
+    	    {ts:1470419259001, num_spots:10}, 
+
+    	    {ts:1470419265005, num_spots:2}, 
+
+    	    {ts:1470419265009, num_spots:18}
+
+    	    ]}
+
+    	    var pastMin = 45;
+    	    var numDataPoints = pastMin * 60; //mins
+    	    $scope.dataSource.categories[0].category = getXAxisPoints();
+    	    function getXAxisPoints(){
+    	    	var xAxis = [];
+    	    	for(var i = 0; i < numDataPoints ; i++){
+    	    		xAxis.push({});
+    	    	}
+    	    	return xAxis;
+    	    }
+
+    	 function updateList(spotList){		
+    	 	var bucketList = [];
+    		var currentTime = Math.floor(new Date().getTime()/1000)*1000;
+
+    		angular.forEach(spotList, function(value, key){		
+    			var val = value.ts	+ 3 * 60000;
+    			if(val < currentTime){
+    				var bucketIndex = Math.floor((currentTime - val) / 1000);
+    				bucketList[bucketIndex] = value.open;
+    			}
+    		})
+
+    		var newDataset = [];
+    	    for(var i = 0; i < numDataPoints; i++){
+    	    	if(bucketList[i]){
+    	    		newDataset[i] = {"value": bucketList[i]}
+    	    	}else{
+
+    	    		newDataset[i] = {};
+    	    	}
+    	    }
+    	    $scope.dataSource.dataset[0].data = newDataset;
+
+		}
+
+		$scope.currentPrice = 3;
+		$interval(function(){
+			var url = "https://smart-parking-v2.run.aws-usw02-pr.ice.predix.io/price";
+			$.ajax({
+  				url: url,
+  				success: function(response){
+  					$scope.currentPrice = "$" + parseFloat(Math.round(response * 100) / 100).toFixed(2);
+  				}
+			});
+		}, 2000)
+
+
+		$interval(function(){
+			var endTime = new Date().getTime()- 3 * 60 * 1000;
+			var startTime = new Date().getTime() - 48 * 60 * 1000;
+			var reqParams = "start=" + startTime+ "&end=" + endTime;
+			var url = "https://smart-parking-v2.run.aws-usw02-pr.ice.predix.io/events";
+			$.ajax({
+  				url: url,
+  				data: reqParams,
+  				success: function(response){
+  					var json = JSON.parse(response);
+  					updateList(json.events);
+  				}
+			});
+		}, 2000)
+}]);
+</script>
+
+</body>
+</html>
