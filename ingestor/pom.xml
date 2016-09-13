@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ge.lighting.tools</groupId>
-    <artifactId>Smart-Parking</artifactId>
+    <groupId>suraj.nair</groupId>
+    <artifactId>Vision</artifactId>
     <version>0.1.0</version>
     
     <properties>

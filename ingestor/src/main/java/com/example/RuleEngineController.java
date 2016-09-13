@@ -26,15 +26,16 @@ public class RuleEngineController {
     @Autowired
     public RuleEngineController(RuleEngineService service) {
         this.service = service;
+        this.service.initialize();
 //        service.initialize();
 //        service.getParkingEvents();
     }
     
-    @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
-    @RequestMapping(value = "/getParkingEvents", method = RequestMethod.GET)
-    public void getParkingEvents() {
-        service.getParkingEvents();
-    }
+    // @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
+    // @RequestMapping(value = "/getParkingEvents", method = RequestMethod.GET)
+    // public void getParkingEvents() {
+    //     service.getParkingEvents();
+    // }
 
 //
 //    /** Adds Aggregated Data to Rule Session
@@ -64,34 +65,34 @@ public class RuleEngineController {
 //    	return "Added rule " + r.getRuleName();
 //    }
 //    
-    @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
-    @RequestMapping(value = "/events", method = RequestMethod.GET)
-    public String insert(
-            @RequestParam(required = true) long start,
-            @RequestParam(required = true) long end){
+    // @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
+    // @RequestMapping(value = "/events", method = RequestMethod.GET)
+    // public String insert(
+    //         @RequestParam(required = true) long start,
+    //         @RequestParam(required = true) long end){
 
-        return service.getEvents(start, end);  
-    }
+    //     return service.getEvents(start, end);  
+    // }
 //    
 //    /**
 //     * Lists all alarms in database
 //     * @return
 //     */
-    @RequestMapping(value = "/initialize", method = RequestMethod.GET)
-    public void init(){
-    	service.initialize();
-    }
+    // @RequestMapping(value = "/initialize", method = RequestMethod.GET)
+    // public void init(){
+    // 	service.initialize();
+    // }
     
-    @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
-    @RequestMapping(value = "/parkingDetails", method = RequestMethod.GET)
-    public String getParkingDetails() {
-        return service.getParkingDetails();
-    }
-    @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
-    @RequestMapping(value = "/price", method = RequestMethod.GET)
-    public double getParkingPrice() {
-        return service.getParkingPrice();
-    }
+    // @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
+    // @RequestMapping(value = "/parkingDetails", method = RequestMethod.GET)
+    // public String getParkingDetails() {
+    //     return service.getParkingDetails();
+    // }
+    // @CrossOrigin(origins = "https://bettertraffic-test-app.run.aws-usw02-pr.ice.predix.io")
+    // @RequestMapping(value = "/price", method = RequestMethod.GET)
+    // public double getParkingPrice() {
+    //     return service.getParkingPrice();
+    // }
     
 //    /**
 //     * Lists all data in database
