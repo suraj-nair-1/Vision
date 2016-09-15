@@ -7,5 +7,3 @@ applications:
     instances: 1
 #    services: 
 #      - em-postgres
-
-      

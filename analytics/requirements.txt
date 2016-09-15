@@ -1,0 +1,7 @@
+Flask
+requests
+SpeechRecognition
+ffmpeg-normalize
+ImageIo
+numpy
+scikit-video

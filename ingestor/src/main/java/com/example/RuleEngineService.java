@@ -29,13 +29,11 @@ import org.springframework.http.HttpEntity;
 public class RuleEngineService {
 	
 	ArrayList<Device> allDevices = new ArrayList<Device>();
-	// ArrayList<ParkingSpots> allLocations = new ArrayList<ParkingSpots>();
 	long start;
 	long end;
-	
 	String authToken = "";
 
-	@Scheduled(fixedRate=3600000)
+	@Scheduled(fixedRate=15000)
 	public void getMediaData() {
 		Date d = new Date();
 		System.out.println("\n\n\n\nGETTING DATA " + d.getTime());
@@ -49,38 +47,36 @@ public class RuleEngineService {
         
         
     	for(Device a: allDevices){
-   			System.out.println("\nASSET: " + a.getAsset_id());
     		String id = a.getAsset_id();
     		String url = "https://ie-public-safety.run.aws-usw02-pr.ice.predix.io/v1/assets/"+id+"/media?assetId="+id+"&media-types=Options:-IMAGE,AUDIO,VIDEO&start-ts="+start+"&end-ts="+end+"&size=40&page=0";
     		String shiet = rest.exchange(url, HttpMethod.GET, entity, String.class).getBody();
-//        		JacksonJsonParser parser = new JacksonJsonParser();
-//        		Map<String, Object> parsedData = parser.parseMap(shiet);
-   			System.out.println(shiet);
     		if (shiet != null && !shiet.isEmpty()) {
-    			// System.out.println(shiet);
     			Map<String, Object> eventsData = parser.parseMap(shiet);
-        		
-        		
         		ArrayList<LinkedHashMap> mp = ((ArrayList<LinkedHashMap>)((LinkedHashMap) eventsData.get("_embedded")).get("medias"));
-//        		System.out.println(mp);
         		for(LinkedHashMap l : mp){
 
         			long ts = (long) ((LinkedHashMap)l).get("timestamp");
         			String media_type = (String) ((LinkedHashMap)l).get("media-type");
         			String data_url = (String) ((LinkedHashMap)l).get("url");
-        			data_url = "https" + data_url.substring(4);
 
-        			System.out.println("URL: " + data_url);
-        			System.out.println("TYPES: " + media_type);
-        			
-        			
+        			String[] arr = data_url.split("/");
+        			data_url = arr[arr.length - 1];
+
+        			System.out.println("Asset: " + a.getAsset_id() + " URL: " + data_url + " TYPES " + media_type);
+        			// parseURL(a.getAsset_id(), media_type, data_url);
+        			String analytics_url = "https://visionanalytics.run.aws-usw02-pr.ice.predix.io/"+media_type.toLowerCase()+"/"+data_url + "/" + authToken;
+        			// System.out.println(analytics_url);
+    				String raw_data = rest.exchange(analytics_url, HttpMethod.GET, entity, String.class).getBody();
+					System.out.println(raw_data + "\n");
+     //    			String raw_data = rest.exchange(data_url, HttpMethod.GET, entity, String.class).getBody();
+					// System.out.println(raw_data);
+
         		}
     		}
     		
     	}
     	start = end;
-    	end = start + 3600000;
-    
+    	end = start + 15000;
     }
 
 	
@@ -88,7 +84,7 @@ public class RuleEngineService {
 		System.out.println("INITIALIZING");
 		Date d = new Date();
 		this.end = d.getTime();
-		this.start = end - 3600000;
+		this.start = end - 15000;
 		
 		resetBearer();
 		System.out.println(authToken);
