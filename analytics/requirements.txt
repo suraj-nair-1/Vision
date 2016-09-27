@@ -1,7 +1,6 @@
 Flask
 requests
-SpeechRecognition
+SpeechRecognition==3.1.2
 ffmpeg-normalize
 ImageIo
 numpy
-scikit-video
